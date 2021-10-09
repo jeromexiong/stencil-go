@@ -1,0 +1,44 @@
+Configuration:
+  DisablePathCorrection: false # 路径重新定义(默认关闭)比如当访问/user/info 当该路径不存在的时候自动访问/user对应的handler
+  EnablePathEscape: false # 转义路径
+  FireMethodNotAllowed: true # 不允许重新指向方法
+  DisableBodyConsumptionOnUnmarshal: true # 如果此字段设置为true，则将创建一个新缓冲区以从请求主体读取。
+  TimeFormat: Mon, 01 Jan 2006 15:04:05 GMT # 设置时间格式
+  Charset: UTF-8 # 设值程序字符集
+  DebugLevel: debug # debug、info、warn、error、fatal、disable。生成环境建议设置为warn，可以减少不必要的日志
+  # 更多配置请参阅：https://studyiris.com/doc/irisDoc/Configuration.html
+
+# secret keys
+keys: stencil-go_
+
+#自定义配置
+own:
+  port: 3000
+  JWTTimeout: 7200
+  websocketPool: 100
+  domains:
+    - http://localhost:8080
+  ignoreURLs:
+    - /public
+    - /signIn
+    - /todos # ws
+
+redis:
+  addr: 127.0.0.1:6379
+  password:
+  db: 1
+  poolSize: 100
+  required: false
+
+# 数据库类型
+dialect: mysql
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  password: 123456
+  database: test
+  charset: utf8
+  maxOpenConns: 800 # 最大打开连接数
+  maxIdleConns: 100 # 连接池的空闲数大小
+  required: true

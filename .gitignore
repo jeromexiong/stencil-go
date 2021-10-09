@@ -1,0 +1,8 @@
+**/*.exe
+*.sum
+.idea/*
+test/
+**/logs/*
+**/output/*
+vendor/
+*.pem

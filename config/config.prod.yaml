@@ -1,0 +1,10 @@
+
+mysql:
+  host: db.kilomind.cn
+  port: 3306
+  user: root
+  password: 123456
+  database: test
+  charset: utf8
+  maxOpenConns: 800 # 最大打开连接数
+  maxIdleConns: 100 # 连接池的空闲数大小
