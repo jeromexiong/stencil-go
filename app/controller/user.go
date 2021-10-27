@@ -2,6 +2,7 @@ package controller
 
 import (
 	. "stencil-go/app/controller/base"
+	"stencil-go/app/extend/util"
 	"stencil-go/app/middleware/jwt"
 	"stencil-go/app/service"
 
@@ -16,25 +17,39 @@ type UserVC struct {
 
 func (vc *UserVC) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle("POST", "/signIn", "SignIn")
-	b.Handle("GET", "/getUserInfo", "GetUserInfo")
+	b.Handle("POST", "/signOut", "SignOut")
+	b.Handle("GET POST", "/getUserInfo", "GetUserInfo")
 }
 
 func (vc *UserVC) SignIn() {
 	type Params struct {
-		UserName  string `form:"name" validate:"required"`
-		Age       int
-		Cellphone string
-		Tail      []string `form:"tail"`
+		Account string `form:"account" validate:"required"`
+		Pwd     string `form:"pwd" validate:"required"`
 	}
 	p := Params{}
 
 	if err := vc.ReadBody(&p); err != nil {
 		return
 	}
+	user, err := vc.User.LoginAccount(p.Account)
+	if err != nil {
+		vc.Failed(err.Error())
+		return
+	}
+	if !util.CheckPwd(p.Pwd, user.Salt, user.Pwd) {
+		vc.Failed("密码错误")
+		return
+	}
+
 	res := make(map[string]interface{})
-	res["name"] = p.UserName
-	res["token"] = jwt.Sign(1, 0, "none")
+	res["id"] = user.ID
+	res["token"] = jwt.Sign(int64(user.ID), 0, "none")
 	vc.Success(res)
+}
+
+func (vc *UserVC) SignOut() {
+	jwt.Remove(vc.Ctx)
+	vc.Success(nil)
 }
 
 func (vc *UserVC) GetUserInfo() {

@@ -23,11 +23,8 @@ type BaseVC struct {
 func (vc *BaseVC) HandleError(ctx iris.Context, err error) {
 	if iris.IsErrPath(err) {
 		// to ignore any "schema: invalid path" you can check the error type
-		// and don't stop the execution.
 		return // continue.
 	}
-
-	ctx.StopExecution()
 }
 
 // 获取请求参数并校验；struct 使用form `UserName string `form:"name"``映射字段

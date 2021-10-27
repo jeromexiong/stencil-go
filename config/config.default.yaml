@@ -8,6 +8,9 @@ Configuration:
   DebugLevel: debug # debug、info、warn、error、fatal、disable。生成环境建议设置为warn，可以减少不必要的日志
   # 更多配置请参阅：https://studyiris.com/doc/irisDoc/Configuration.html
 
+## ⚠️修改配置文件后，需要运行打包命令使配置生效
+## go-bindata -pkg config_data -o app/bindata/config/config_data.go config/...
+
 # secret keys
 keys: stencil-go_
 
@@ -28,7 +31,7 @@ redis:
   password:
   db: 1
   poolSize: 100
-  required: false
+  required: true
 
 # 数据库类型
 dialect: mysql
