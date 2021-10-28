@@ -25,3 +25,34 @@ func (u *User) GetById(id int) (model.Admin, error) {
 	}
 	return user, nil
 }
+
+func (u *User) UpdatePwd(id int, salt string, pwd string) {
+	update := &model.Admin{
+		ID:   uint32(id),
+		Salt: salt,
+		Pwd:  pwd,
+	}
+	core.DB.Model(update).Updates(update)
+}
+
+func (u *User) GetList(params *model.AdminParams) (res []model.Admin, count int64, err error) {
+	if len(params.Keywords) > 0 {
+		core.DB.Where("username like %?", params.Keywords)
+	}
+	if params.Page > 0 && params.PageSize > 0 {
+		core.DB.Limit(params.PageSize).Offset((params.Page - 1) * params.PageSize)
+	}
+	core.DB.Select(
+		"id as user_id",
+		"nickname",
+		"username",
+		"telephone",
+		"last_ip",
+		"created_time",
+		"updated_time",
+	)
+	if err = core.DB.Find(&res).Count(&count).Error; err != nil {
+		return
+	}
+	return
+}

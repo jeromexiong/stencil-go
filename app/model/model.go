@@ -2,6 +2,7 @@ package model
 
 // Admin [...]
 type Admin struct {
+	Model
 	ID          uint32 `gorm:"primaryKey;column:id;type:int(10) unsigned;not null" json:"id"`                 // 管理员id
 	Nickname    string `gorm:"column:nickname;type:varchar(32);not null;default:''" json:"nickname"`          // 姓名
 	Username    string `gorm:"unique;column:username;type:varchar(64);not null;default:''" json:"username"`   // 用户名

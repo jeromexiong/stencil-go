@@ -3,4 +3,5 @@
 1. `go run tidy`
 
 - [gorm 增删改查](https://www.jianshu.com/p/1513f55f8192)
+- [gorm v2](https://www.kancloud.cn/sliver_horn/gorm/1861158)
 - [validator](https://blog.csdn.net/guyan0319/article/details/105918559)

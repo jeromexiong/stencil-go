@@ -1,6 +1,9 @@
 package base
 
 import (
+	coreJwt "stencil-go/app/core/jwt"
+	"stencil-go/app/middleware/jwt"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
 )
@@ -20,34 +23,7 @@ type BaseVC struct {
 	Ctx     iris.Context
 }
 
-func (vc *BaseVC) HandleError(ctx iris.Context, err error) {
-	if iris.IsErrPath(err) {
-		// to ignore any "schema: invalid path" you can check the error type
-		return // continue.
-	}
-}
-
-// 获取请求参数并校验；struct 使用form `UserName string `form:"name"``映射字段
-func (vc *BaseVC) ReadBody(ptr interface{}) error {
-	if err := vc.Ctx.ReadBody(ptr); err != nil {
-		// 参数不匹配错误不算
-		if !iris.IsErrPath(err) {
-			vc.Error(STATUS_PARAMS, err.Error())
-			return err
-		}
-	}
-
-	// [参数校验](https://blog.csdn.net/guyan0319/article/details/105918559/)
-	validate := validator.New()
-	if err := validate.Struct(ptr); err != nil {
-		for _, err := range err.(validator.ValidationErrors) {
-			vc.Error(STATUS_PARAMS, err.Error())
-			return err
-		}
-	}
-
-	return nil
-}
+type Map map[string]interface{}
 
 // 输出成功
 func (vc *BaseVC) Success(data interface{}) {
@@ -91,4 +67,39 @@ func (vc *BaseVC) getData() map[string]interface{} {
 	data["data"] = vc.data
 
 	return data
+}
+
+func (vc *BaseVC) HandleError(ctx iris.Context, err error) {
+	if iris.IsErrPath(err) {
+		// to ignore any "schema: invalid path" you can check the error type
+		return // continue.
+	}
+}
+
+// 获取请求参数并校验；struct 使用form `UserName string `form:"name"``映射字段
+func (vc *BaseVC) ReadBody(ptr interface{}) error {
+	if err := vc.Ctx.ReadBody(ptr); err != nil {
+		// 参数不匹配错误不算
+		if !iris.IsErrPath(err) {
+			vc.Error(STATUS_PARAMS, err.Error())
+			return err
+		}
+	}
+
+	// [参数校验](https://blog.csdn.net/guyan0319/article/details/105918559/)
+	validate := validator.New()
+	if err := validate.Struct(ptr); err != nil {
+		for _, err := range err.(validator.ValidationErrors) {
+			vc.Error(STATUS_PARAMS, err.Error())
+			return err
+		}
+	}
+
+	return nil
+}
+
+// 获取token 用户
+func (vc *BaseVC) TokenUser() *coreJwt.Info {
+	user := jwt.User(vc.Ctx)
+	return user
 }
